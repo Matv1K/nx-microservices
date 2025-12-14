@@ -1,0 +1,33 @@
+// Prisma Schema for Posts Microservice
+// 
+// Note: This extends the User model from auth_microservice
+// Make sure to reference the same database and User table
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Use same DATABASE_URL as other services
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String   @db.Text
+  userId      Int      // Author of the post
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  // Note: User model is defined in auth_microservice
+  // This relation will work if User table exists in same database
+  // user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@index([userId, createdAt])
+}
+
